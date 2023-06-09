@@ -12,11 +12,9 @@ fn print_dice(dice_counter: i32, dice_value: i32, dice: Dice) {
 }
 
 fn final_print(total: i32, add: i32) {
-    println!("::: ::: :::");
     if add != 0 {
         println!("::: Final result: {} + {} = {}", total - add, add, total);
     } else {
         println!("::: Final result: {}", total);
     }
-    println!("::: ::: :::");
 }
