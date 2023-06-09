@@ -104,7 +104,7 @@ fn validate_sequence(args: &Vec<Arg>) -> Option<i32> {
             }
             _ => {
                 if !previous.is_none() { // first arg is never inherently wrong
-                    if !validate_one(&mut add, &arg, &previous.unwrap()) {
+                    if !validate_one(&arg, &previous.unwrap()) {
                         return None;
                     }
                 }
@@ -116,7 +116,7 @@ fn validate_sequence(args: &Vec<Arg>) -> Option<i32> {
 }
 
 
-fn validate_one(add: &mut i32, arg: &Arg, previous_arg: &Arg) -> bool {
+fn validate_one(arg: &Arg, previous_arg: &Arg) -> bool {
     match arg {
         Arg::DiceMultiplier(value) => {
             if matches!(previous_arg, Arg::DiceMultiplier(_) | Arg::Add(_)) {
