@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 use rand::rngs::ThreadRng;
 use rand::Rng;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, strum::EnumIter)]
 pub enum Dice {
     D4,
     D6,

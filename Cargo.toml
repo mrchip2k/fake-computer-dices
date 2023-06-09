@@ -2,8 +2,10 @@
 name = "roll"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/mrchip2k/fake-computer-dices"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 rand = "0.8.5"
+strum = { version = "0.24.1", features = ["derive"] }

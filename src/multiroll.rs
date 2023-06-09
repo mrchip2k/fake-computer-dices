@@ -98,9 +98,16 @@ fn validate_sequence(args: &Vec<Arg>) -> Option<i32> {
 
     let mut previous: Option<&Arg> = None;
     for arg in args {
-        if !previous.is_none() { // first arg is never inherently wrong
-            if !validate_one(&mut add, &arg, &previous.unwrap()) {
-                return None;
+        match arg {
+            Arg::Add(value) => {
+                add += value;
+            }
+            _ => {
+                if !previous.is_none() { // first arg is never inherently wrong
+                    if !validate_one(&mut add, &arg, &previous.unwrap()) {
+                        return None;
+                    }
+                }
             }
         }
         previous = Some(arg);
@@ -111,13 +118,9 @@ fn validate_sequence(args: &Vec<Arg>) -> Option<i32> {
 
 fn validate_one(add: &mut i32, arg: &Arg, previous_arg: &Arg) -> bool {
     match arg {
-        Arg::Add(value) => {
-            *add += value;
-            return true;
-        }
         Arg::DiceMultiplier(value) => {
             if matches!(previous_arg, Arg::DiceMultiplier(_) | Arg::Add(_)) {
-                println!("Error: Multiplier {} can only be written after a dice.", value);
+                println!("Error: Multiplier x{} can only be written after a dice.", value);
                 println!("Valid example: roll d6 x3");
                 return false;
             } else if *value < 1 || *value > 100 {
@@ -128,7 +131,7 @@ fn validate_one(add: &mut i32, arg: &Arg, previous_arg: &Arg) -> bool {
                 println!("Warning: Useless multiplier \"x1\"");
             }
         }
-        Arg::Dice(_) => {}
+        _ => {}
     }
     return true;
 }
