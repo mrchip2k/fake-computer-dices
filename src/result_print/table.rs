@@ -13,7 +13,7 @@ pub fn print_table(add: i32, total: i32, dices: &Vec<(i32, Dice)>) {
 
 fn print_dice(dice_counter: i32, dice_value: i32, dice: Dice) {
     let msg = format!("{:>3}│{:<6}│{}",
-                      dice_counter.to_string().color(Color::TrueColor { r: 128, g: 128, b: 128 }),
+                      dice_counter.to_string().color(Color::White),
                       dice.to_string().color(dice.get_color()),
                       dice_value.to_string().bold());
     println!("{}", msg);

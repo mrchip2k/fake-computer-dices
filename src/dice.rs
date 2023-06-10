@@ -30,9 +30,9 @@ impl Dice {
             Dice::Coin => { Color::BrightYellow }
             Dice::D4 => { Color::Red }
             Dice::D6 => { Color::Yellow }
-            Dice::D8 => { Color::Green }
-            Dice::D10 => { Color::BrightGreen }
-            Dice::D12 => { Color::BrightBlue }
+            Dice::D8 => { Color::BrightYellow }
+            Dice::D10 => { Color::Green }
+            Dice::D12 => { Color::Cyan }
             Dice::D20 => { Color::Magenta }
         }
     }
