@@ -54,13 +54,20 @@ fn try_run_different_modes() {
 
 
 fn print_help() {
-    print_version();
     println!("::: Help");
     println!("Your own set of virtual dices!");
+
+    println!("Print this help page:");
+    println!("\t{} --help | -h", env!("CARGO_PKG_NAME"));
+    println!("Print version:");
+    println!("\t{} --version | -V", env!("CARGO_PKG_NAME"));
+
     print!("Valid dices (case insensitive):");
     for dice in Dice::iter() {
         print!(" {}", dice);
     }
+    println!();
+
     println!("\n::: Examples");
     println!("Roll a single dice:");
     println!("\t{} d6", env!("CARGO_PKG_NAME"));
