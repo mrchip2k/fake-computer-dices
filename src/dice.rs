@@ -1,6 +1,7 @@
 use std::fmt;
 use std::fmt::Formatter;
 
+use colored::Color;
 use rand::Rng;
 use rand::rngs::ThreadRng;
 
@@ -22,6 +23,20 @@ impl Dice {
             _ => { rng.gen_range(1..=self.get_dice_max()) }
         }
     }
+
+
+    pub fn get_color(self) -> Color {
+        match self {
+            Dice::Coin => { Color::BrightYellow }
+            Dice::D4 => { Color::Red }
+            Dice::D6 => { Color::Yellow }
+            Dice::D8 => { Color::Green }
+            Dice::D10 => { Color::BrightGreen }
+            Dice::D12 => { Color::BrightBlue }
+            Dice::D20 => { Color::Magenta }
+        }
+    }
+
 
     // What is the highest number this type of dice can roll?
     fn get_dice_max(self) -> i32 {

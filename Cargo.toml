@@ -9,3 +9,4 @@ repository = "https://github.com/mrchip2k/fake-computer-dices"
 [dependencies]
 rand = "0.8.5"
 strum = { version = "0.24.1", features = ["derive"] }
+colored = "2.0.0"

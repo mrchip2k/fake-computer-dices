@@ -25,7 +25,7 @@ fn main() {
 
     let result = multiroll.roll(&mut rng);
 
-    result_print::simple::print_simple(multiroll.get_add(), result.0, &result.1);
+    result_print::table::print_table(multiroll.get_add(), result.0, &result.1);
 }
 
 
