@@ -69,6 +69,7 @@ fn parse_individual_args() -> Option<Vec<Arg>> {
             "d10" => { args_parsed.push(Arg::Dice(Dice::D10)) }
             "d12" => { args_parsed.push(Arg::Dice(Dice::D12)) }
             "d20" => { args_parsed.push(Arg::Dice(Dice::D20)) }
+            "coin" => { args_parsed.push(Arg::Dice(Dice::Coin)) }
             arg => {
                 match arg.chars().nth(0).unwrap() {
                     'x' => {
