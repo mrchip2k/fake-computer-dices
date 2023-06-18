@@ -1,6 +1,6 @@
 [package]
 name = "roll"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 repository = "https://github.com/mrchip2k/fake-computer-dices"
 
@@ -10,3 +10,4 @@ repository = "https://github.com/mrchip2k/fake-computer-dices"
 rand = "0.8.5"
 strum = { version = "0.24.1", features = ["derive"] }
 colored = "2.0.0"
+readonly = "0.2.8"

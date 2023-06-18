@@ -1,88 +1,90 @@
+use std::collections::VecDeque;
 use std::process::exit;
 
-use strum::IntoEnumIterator;
+use colored::Colorize;
 
-use multiroll::Multiroll;
+use crate::parsing::ParseError;
 
-use crate::dice::Dice;
-
-mod dice;
-mod multiroll;
+mod dice_types;
 mod result_print;
+mod multiroll;
+mod dice_arg;
+mod parsing;
+mod other_commands;
 
 
 fn main() {
-    try_run_different_modes();
+    let mut args: VecDeque<String> = std::env::args().collect();
+    args.pop_front(); // don't care about program path
 
-    let mut rng = rand::thread_rng();
+    other_commands::try_run_other_commands(&args);
 
-    let multiroll = Multiroll::new_from_cli_args();
-    if multiroll.is_none() {
-        println!("Error: Could not parse arguments.");
-        exit(1);
-    }
-    let multiroll = multiroll.unwrap();
+    let use_simplified_print = matches!(&(args[0])[..], "--simple" | "-s");
+    let argument_index_offset = if use_simplified_print {
+        args.pop_front();
+        2
+    } else { 1 };
 
-    let result = multiroll.roll(&mut rng);
+    let parsed_args = parsing::parse_args(&args);
 
-    result_print::table::print_table(multiroll.get_add(), result.0, &result.1);
-}
+    match parsed_args {
+        Ok(args) => {
+            let mut rng = rand::thread_rng();
+            let result = multiroll::multiroll(&args, &mut rng);
 
-
-fn try_run_different_modes() {
-    let argv: Vec<String> = std::env::args().collect();
-
-    if argv.len() <= 1 {
-        print_help();
-        exit(1);
-    }
-
-    if argv.len() == 2 {
-        match &argv[1][..] {
-            "-h" | "--help" => {
-                print_help();
-                exit(0);
+            if use_simplified_print {
+                result_print::simple::print(&result);
+            } else {
+                result_print::table::print(&result);
             }
-            "-V" | "--version" => {
-                print_version();
-                exit(0);
+
+            exit(0);
+        }
+
+        Err(error) => {
+            print!("Error: ");
+            match error {
+                ParseError::NoArgs => {
+                    println!("Command has no arguments.");
+                    println!();
+                    println!("Show help page:");
+                    println!("\t{} --help | -h", env!("CARGO_PKG_NAME"));
+                }
+                ParseError::UnknownArgument { argument_index } => {
+                    println!("Unknown argument.");
+                    highlight_bad_argument(argument_index + argument_index_offset);
+                    println!();
+                    println!("Show help page:");
+                    println!("\t{} --help | -h", env!("CARGO_PKG_NAME"));
+                }
+                ParseError::DiceAmountOutOfRange { argument_index } => {
+                    println!("Dice count multiplier out of range.");
+                    println!("Use a positive and non extreme value.");
+                    highlight_bad_argument(argument_index + argument_index_offset);
+                }
+                ParseError::IntParsing { argument_index } => {
+                    println!("Could not parse parameter as integer.");
+                    highlight_bad_argument(argument_index + argument_index_offset);
+                }
             }
-            _ => {}
         }
     }
+
+    exit(1);
 }
 
 
-fn print_help() {
-    println!("::: Help");
-    println!("Your own set of virtual dices!");
+fn highlight_bad_argument(bad_index: i32) {
+    println!("\nBad argument here:");
+    let args: Vec<String> = std::env::args().collect();
+    for arg in args.iter().enumerate() {
+        let msg = if arg.0 as i32 == bad_index {
+            arg.1.on_bright_red().black().bold().underline()
+        } else {
+            arg.1.normal()
+        };
 
-    println!("Print this help page:");
-    println!("\t{} --help | -h", env!("CARGO_PKG_NAME"));
-    println!("Print version:");
-    println!("\t{} --version | -V", env!("CARGO_PKG_NAME"));
-
-    print!("Valid dices (case insensitive):");
-    for dice in Dice::iter() {
-        print!(" {}", dice);
+        print!("{msg} ");
     }
     println!();
-
-    println!("\n::: Examples");
-    println!("Roll a single dice:");
-    println!("\t{} d6", env!("CARGO_PKG_NAME"));
-    println!("Roll multiple dice:");
-    println!("\t{} d6 d12", env!("CARGO_PKG_NAME"));
-    println!("Roll multiple dice and add a value (Negative is also allowed):");
-    println!("\t{} d20 d20 +6", env!("CARGO_PKG_NAME"));
-    println!("Multiple additional values are summed together:");
-    println!("\t{} d4 d4 d4 d4 +15 -3", env!("CARGO_PKG_NAME"));
-    println!("Multiple dice of the same type can be abbreviated:");
-    println!("\t{} d4 x4", env!("CARGO_PKG_NAME"));
-}
-
-
-fn print_version() {
-    println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
-    println!("repository: {}", env!("CARGO_PKG_REPOSITORY"));
 }
