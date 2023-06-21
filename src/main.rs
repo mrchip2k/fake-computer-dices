@@ -8,7 +8,6 @@ use crate::parsing::ParseError;
 mod dice_types;
 mod result_print;
 mod multiroll;
-mod dice_arg;
 mod parsing;
 mod other_commands;
 

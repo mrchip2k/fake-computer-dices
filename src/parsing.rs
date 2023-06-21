@@ -1,8 +1,5 @@
 use std::collections::VecDeque;
 
-use dice_arg::DiceArg;
-
-use crate::dice_arg;
 use crate::dice_types::DiceType;
 
 pub enum ParseError {
@@ -17,6 +14,36 @@ pub enum ParseError {
 pub struct ParseResult {
     pub dice_args: Vec<DiceArg>,
     pub modifier: Option<i32>,
+}
+
+pub struct DiceArg {
+    dice_type: DiceType,
+    /// how many times this should be rolled
+    amount: i32,
+}
+
+
+pub struct AmountOutOfRangeError;
+
+impl DiceArg {
+    pub fn new(dice_type: &DiceType, amount: i32) -> Result<DiceArg, AmountOutOfRangeError> {
+        if amount < 1 || amount > 100 {
+            return Err(AmountOutOfRangeError);
+        }
+
+        return Ok(DiceArg {
+            dice_type: dice_type.clone(),
+            amount,
+        });
+    }
+
+    pub fn get_dice_type(&self) -> DiceType {
+        self.dice_type
+    }
+
+    pub fn get_amount(&self) -> i32 {
+        self.amount
+    }
 }
 
 
